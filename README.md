@@ -27,6 +27,7 @@ Open each `output.pdf` next to its `sample.html` to see the result.
 | [`float-in-bfc`](./cases/float-in-bfc/issue.md) | floats inside `overflow:hidden` (BFC) | ❌ container collapses, floated children vanish |
 | [`css1-float-textflow`](./cases/css1-float-textflow/issue.md) | text flowing past a float (W3C CSS1 §5.5.25) | ❌ float reserves no horizontal space; text overlaps it |
 | [`css1-clear`](./cases/css1-clear/issue.md) | `clear:left/right/both/none` (W3C CSS1 §5.5.26) | ❌ no float height to clear; `clear:right` para shifts left of margin |
+| [`acid1`](./cases/acid1/issue.md) | Acid1 box/float/clear torture test (WaSP, 1998) | ❌ floats collapse into one left column; no match to reference |
 | [`minimal-float`](./cases/minimal-float/issue.md) | single `float:left; width:200px` | ✅ control — works |
 | [`float-pct`](./cases/float-pct/issue.md) | single `float:left; width:50%` | ✅ control — works |
 | [`flex-columns`](./cases/flex-columns/issue.md) | two columns via `display:flex` | ✅ control / workaround — works |
@@ -42,7 +43,14 @@ multi-column layouts correctly and are the recommended workaround.
 The `css1-*` cases are adapted from the historic [W3C CSS1 Test Suite](https://www.w3.org/Style/CSS/Test/CSS1/current/)
 (floated `<img>` elements replaced by self-contained CSS blocks). They add two
 failure modes the other cases miss: inline text flowing *past* a float, and the
-four `clear` values isolated individually.
+four `clear` values isolated individually. The [`acid1`](./cases/acid1/issue.md)
+case is the verbatim Web Standards Project box-acid test — a comprehensive
+CSS1 box/float/clear benchmark rather than a minimal isolation.
+
+> **On the other Acid tests:** only Acid1 belongs here. Acid2 depends on `:hover`,
+> `data:` URIs and other CSS2 features that are interactive or out of scope for a
+> static HTML→PDF renderer, and Acid3 is a JavaScript/DOM/SVG test — folio runs no
+> script, so it would measure nothing meaningful about layout.
 
 ### Where it appears to go wrong (shared pointers)
 
