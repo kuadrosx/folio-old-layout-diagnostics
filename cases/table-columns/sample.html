@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.row       { display: table; width: 100%; }
+.col       { display: table-cell; width: 50%; }
+.col-left  { background: #eef; }
+.col-right { background: #fee; }
+.after     { background: #efe; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="col col-left"><h2>Left column</h2><p>Left line one.</p><p>Left line two.</p></div>
+  <div class="col col-right"><h2>Right column</h2><p>Right line one.</p></div>
+</div>
+<div class="after"><h2>Content after the row</h2><p>This must appear BELOW both columns.</p></div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.row       { width: 100%; }
+.col-left  { float: left;  width: 50%; background: #eef; }
+.col-right { float: right; width: 50%; background: #fee; }
+.clear     { clear: both; }
+.after     { background: #efe; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="col-left"><h2>Left column</h2><p>Left line one.</p><p>Left line two.</p></div>
+  <div class="col-right"><h2>Right column</h2><p>Right line one.</p></div>
+  <div class="clear"></div>
+</div>
+<div class="after"><h2>Content after the row</h2><p>This must appear BELOW both columns, not overlapping them.</p></div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Go build artifacts
+/folio-repro
+*.exe
+*.test
+*.out
+
+# Go workspace (local-only; do not publish)
+go.work
+go.work.sum
+
+# Editor / OS junk
+*.swp
+*.swo
+*~
+.DS_Store
+.idea/
+.vscode/
+
+# Note: cases/<name>/output.pdf are intentionally committed as rendered
+# evidence for the bug report. Regenerate them with `go run .`.
