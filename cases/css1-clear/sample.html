@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* Adapted from the W3C CSS1 Test Suite, section 5.5.26 "clear":
+   https://www.w3.org/Style/CSS/Test/CSS1/current/test5526.htm
+   The original floats <img> (vblank.gif) elements via the HTML
+   `align` attribute; here each is replaced by a self-contained CSS
+   block so the case needs no external assets. The orange rectangles
+   and the self-describing sentences are preserved verbatim so the
+   W3C pass/fail assertions still read true. */
+.rect  { width: 60px; height: 50px; background: orange; }
+.left  { float: left; }
+.right { float: right; }
+.one   { clear: left; }
+.two   { clear: right; }
+.three { clear: both; }
+.four  { clear: none; }
+</style>
+</head>
+<body>
+<div class="rect left"></div>
+<p>This text should be flowing past a tall orange rectangle on the left side of the page.</p>
+<br clear="all">
+
+<div class="rect left"></div>
+<p class="one">This paragraph should appear below the tall orange rectangle above and to the left, and not flow past it.</p>
+<br clear="all">
+
+<div class="rect right"></div>
+<p class="two">This paragraph should appear below the tall orange rectangle above and to the right, and not flow past it.</p>
+<br clear="all">
+
+<div class="rect left"></div>
+<div class="rect right"></div>
+<p class="three">This paragraph should appear below the two tall orange rectangles, and not flow between them.</p>
+
+<div class="rect left"></div>
+<div class="rect right"></div>
+<p class="four">This paragraph should be between both tall orange rectangles.</p>
+<br clear="all">
+</body>
+</html>

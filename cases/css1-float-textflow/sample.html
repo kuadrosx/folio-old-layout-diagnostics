@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* Adapted from the W3C CSS1 Test Suite, section 5.5.25 "float":
+   https://www.w3.org/Style/CSS/Test/CSS1/current/test5525.htm
+   The original floats an <img> (vblank.gif) via the HTML `align`
+   attribute; here that image is replaced by a self-contained CSS
+   block so the case needs no external assets. The orange rectangle
+   and the self-describing sentences are preserved so the W3C
+   pass/fail assertions still read true. */
+.rect { width: 60px; height: 50px; background: orange; }
+.one  { float: left; }
+.two  { float: right; }
+.after { background: #efe; }
+</style>
+</head>
+<body>
+<div class="rect one"></div>
+<p>This text should be flowing past a tall orange rectangle on the left side of the page. In this case, it is the block which has been floated to the left.</p>
+<div class="after" style="clear: both"><p>Control line: this drops below the left float.</p></div>
+<hr>
+<div class="rect two"></div>
+<p>This text should be flowing past a tall orange rectangle on the right side of the page. In this case, it is the block which has been floated to the right.</p>
+</body>
+</html>

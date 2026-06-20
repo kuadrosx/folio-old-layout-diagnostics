@@ -25,6 +25,8 @@ Open each `output.pdf` next to its `sample.html` to see the result.
 | [`float-columns`](./cases/float-columns/issue.md) | floated columns + `clear:both` | ❌ severe — following content overlaps floats at top of page |
 | [`table-columns`](./cases/table-columns/issue.md) | `display:table` / `table-cell` columns | ❌ cells stack vertically instead of forming a row |
 | [`float-in-bfc`](./cases/float-in-bfc/issue.md) | floats inside `overflow:hidden` (BFC) | ❌ container collapses, floated children vanish |
+| [`css1-float-textflow`](./cases/css1-float-textflow/issue.md) | text flowing past a float (W3C CSS1 §5.5.25) | ❌ float reserves no horizontal space; text overlaps it |
+| [`css1-clear`](./cases/css1-clear/issue.md) | `clear:left/right/both/none` (W3C CSS1 §5.5.26) | ❌ no float height to clear; `clear:right` para shifts left of margin |
 | [`minimal-float`](./cases/minimal-float/issue.md) | single `float:left; width:200px` | ✅ control — works |
 | [`float-pct`](./cases/float-pct/issue.md) | single `float:left; width:50%` | ✅ control — works |
 | [`flex-columns`](./cases/flex-columns/issue.md) | two columns via `display:flex` | ✅ control / workaround — works |
@@ -36,6 +38,11 @@ A **single** float works; **two** floats (especially `left`+`right`), float
 clearing (`clear:both`), float containment (`overflow:hidden` BFC), and
 `display:table-cell` columns do not. `display:flex` and CSS grid render
 multi-column layouts correctly and are the recommended workaround.
+
+The `css1-*` cases are adapted from the historic [W3C CSS1 Test Suite](https://www.w3.org/Style/CSS/Test/CSS1/current/)
+(floated `<img>` elements replaced by self-contained CSS blocks). They add two
+failure modes the other cases miss: inline text flowing *past* a float, and the
+four `clear` values isolated individually.
 
 ### Where it appears to go wrong (shared pointers)
 
