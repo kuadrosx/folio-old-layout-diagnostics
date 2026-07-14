@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+/* One construct (MOST SEVERE — content loss): a single flex line whose
+   content is taller than one A4 page. Chrome fragments the flex line and
+   continues it onto page 2. folio lays the first/only line out whole and
+   clips everything past the page bottom, silently DROPPING it — the tail
+   items (and the marker below) never appear. */
+.row { display: flex; }
+.col { flex: 1; }
+.item {
+  height: 60px;
+  margin: 0 0 4px 0;
+  background: #cde;
+  padding: 4px;
+}
+.last { background: #f88; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="col">
+    <div class="item">Item 01</div>
+    <div class="item">Item 02</div>
+    <div class="item">Item 03</div>
+    <div class="item">Item 04</div>
+    <div class="item">Item 05</div>
+    <div class="item">Item 06</div>
+    <div class="item">Item 07</div>
+    <div class="item">Item 08</div>
+    <div class="item">Item 09</div>
+    <div class="item">Item 10</div>
+    <div class="item">Item 11</div>
+    <div class="item">Item 12</div>
+    <div class="item">Item 13</div>
+    <div class="item">Item 14</div>
+    <div class="item">Item 15</div>
+    <div class="item">Item 16</div>
+    <div class="item">Item 17</div>
+    <div class="item">Item 18</div>
+    <div class="item last">Item 19 — LAST (must survive onto page 2)</div>
+  </div>
+</div>
+</body>
+</html>

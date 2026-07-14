@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@font-face {
+  font-family: 'Poppins';
+  src: url('Poppins-Regular.ttf');
+  font-weight: normal;
+}
+body { margin: 0; }
+/* One construct: two lines of Poppins text with line-height:normal.
+   folio resolves `normal` ~20% tighter than a browser for Poppins,
+   so the two baselines sit visibly closer together than in Chrome. */
+.para {
+  font-family: 'Poppins';
+  font-size: 11px;
+  line-height: normal;
+  width: 220px;
+  background: #eef;
+}
+</style>
+</head>
+<body>
+<p class="para">Line one of Poppins text at line-height normal.<br>Line two should sit ~29px below line one.</p>
+</body>
+</html>

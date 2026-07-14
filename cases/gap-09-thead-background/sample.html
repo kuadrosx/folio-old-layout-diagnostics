@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+table { width: 400px; border-collapse: collapse; }
+td, th { padding: 6px 10px; text-align: left; }
+/* One construct: background-color on <thead>.
+   Chrome paints the grey title bar across the header row. folio does not
+   paint background-color set on the <thead> element (it only honors it on
+   thead td/th). */
+thead { background-color: #cccccc; }
+</style>
+</head>
+<body>
+<table>
+  <thead><tr><th>Field</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Name</td><td>Ada</td></tr>
+    <tr><td>Score</td><td>87</td></tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -70,8 +70,78 @@ CSS1 box/float/clear benchmark rather than a minimal isolation.
   a float context, so floats overlap following content and `clear` has nothing to
   clear against.
 
+## FOLIO-GAP coverage (PDF-rendering migration)
+
+Beyond the float family above, this repo carries one minimal case per gap in the
+downstream migration note
+`folio-render-gaps.md` (`FOLIO-GAP-01` …
+`FOLIO-GAP-11`). Each `gap-NN-*` case is a self-contained, upstream-ready triad
+(`sample.html` + `issue.md` + `output.pdf`). The **Current** column is the
+folio-vs-Chrome verdict measured by the parity harness against the pinned local
+folio checkout (`v0.10.0-1-g1b17d01`):
+
+| Gap | Case | Current (folio vs Chrome) |
+|-----|------|---------------------------|
+| FOLIO-GAP-01 · `line-height:normal` too tight | [`gap-01-line-height`](./cases/gap-01-line-height/issue.md) | ❌ FAIL — reproduces (text block ~18% shorter) |
+| FOLIO-GAP-02 · Poppins-Bold advances ~9% wide | [`gap-02-glyph-advance`](./cases/gap-02-glyph-advance/issue.md) | ❌ FAIL — reproduces (token wraps where Chrome fits) |
+| FOLIO-GAP-03 · internal `#id` links | [`gap-03-internal-links`](./cases/gap-03-internal-links/issue.md) | ✅ PASS — **fixed** by folio commit 1b17d01 (id → registered `/Dest`) |
+| FOLIO-GAP-04 · `float` | float family: [`minimal-float`](./cases/minimal-float/issue.md), [`float-left-right`](./cases/float-left-right/issue.md), [`float-columns`](./cases/float-columns/issue.md), [`float-in-bfc`](./cases/float-in-bfc/issue.md), [`float-pct`](./cases/float-pct/issue.md), [`css1-clear`](./cases/css1-clear/issue.md), [`css1-float-textflow`](./cases/css1-float-textflow/issue.md), [`table-columns`](./cases/table-columns/issue.md), [`flex-columns`](./cases/flex-columns/issue.md), [`plain-blocks`](./cases/plain-blocks/issue.md), [`acid1`](./cases/acid1/issue.md), [`acid2`](./cases/acid2/issue.md) | see those cases (float geometry inspected manually, **not** auto-graded) |
+| FOLIO-GAP-05 · `position:absolute` | [`gap-05-position-absolute`](./cases/gap-05-position-absolute/issue.md) | ❌ FAIL — reproduces (absolute ignored; text displaced below, banner empty) |
+| FOLIO-GAP-06 · margins on flex items | [`gap-06-flex-margins`](./cases/gap-06-flex-margins/issue.md) | ❌ FAIL — reproduces (gutter + top-offset dropped) |
+| FOLIO-GAP-07 · `display:grid` | [`gap-07-grid-pill`](./cases/gap-07-grid-pill/issue.md) | ❌ FAIL — reproduces (square corners; `border-radius` ignored) |
+| FOLIO-GAP-08 · consecutive `inline-block` | [`gap-08-inline-block-flow`](./cases/gap-08-inline-block-flow/issue.md) | ❌ FAIL — reproduces (badges stack one per line; folio 6 rows vs Chrome 3) |
+| FOLIO-GAP-09 · `background-color` on `thead` | [`gap-09-thead-background`](./cases/gap-09-thead-background/issue.md) | ❌ FAIL — reproduces (no header bar painted) |
+| FOLIO-GAP-10 · flex line not fragmented (content loss) | [`gap-10-flex-page-break`](./cases/gap-10-flex-page-break/issue.md) | ❌ FAIL — reproduces (folio 1 page vs Chrome 2; content dropped) |
+| FOLIO-GAP-11 · background not clipped to radius on overflow | [`gap-11-border-radius-overflow`](./cases/gap-11-border-radius-overflow/issue.md) | ❌ FAIL — reproduces (square band spills below the rounded bottom) |
+
+> **The one case that reads PASS: FOLIO-GAP-03.** The pinned folio checkout is
+> one commit past the `v0.10.0` tag, and that commit (`1b17d01`, "register
+> element ids as PDF named destinations") fixes internal `#id` links — the link
+> now resolves to a registered `/Dest`, matching Chrome. Its downstream
+> workaround can be removed once production moves onto a folio build with
+> 1b17d01. The parity harness will alert (flip GAP-03 back to FAIL) if the fix
+> ever regresses. Every other gap still reproduces (FAIL).
+
+## Chrome parity harness
+
+`parity_test.go` renders each `gap-NN-*` case's `sample.html` with **both** folio
+and headless Google Chrome on an identical A4, zero-margin page, then decides per
+gap whether folio **matches** Chrome:
+
+- **FAIL** = folio differs from Chrome → the gap reproduces (current, expected state).
+- **PASS** = folio matches Chrome → the gap is absent / fixed upstream.
+
+Each case records the state observed when it was authored (`wantReproduce`). The
+Go test stays **green** while reality matches that record; it **fails with an
+alert** the moment a verdict flips — a reproducing gap starts matching Chrome
+(folio fixed it → remove the downstream workaround) or a matching construct
+regresses. So *a gap flips to PASS when folio matches Chrome*, and that flip is
+the signal to act.
+
+Because folio and Chrome rasterize fonts differently, a whole-page pixel diff is
+too noisy to distinguish a layout gap from antialiasing. Each case therefore uses
+a **targeted, font-antialiasing-immune check**: the bounding box of a flat fill
+colour, whether a pill corner is square or rounded, how many rows pills occupy,
+or the vertical extent of a text block. GAP-03 and GAP-10 use structural PDF
+checks (link-action kind; page count).
+
+Run it:
+
+```sh
+go test -run TestChromeParity -v .   # prints the per-gap summary table
+go test ./...                        # runs it as part of the suite
+```
+
+Dependencies (all gated — the test **skips**, not fails, if any is missing):
+Chrome (`/Applications/Google Chrome.app/...`, override with `CHROME_BIN`) and
+poppler (`pdftoppm`, `pdfinfo`). The summary table (`GAP | case |
+folio-vs-chrome | detail`) is printed via `-v`.
+
 ## Environment
 
-- folio `v0.9.1`, also reproduces on `main` @ `72b6a6a` (`v0.9.1-4-g72b6a6a`)
+- folio pinned to the **local checkout** at `../folio` via `go.work` (module
+  requires `v0.9.1`, but `go run`/`go test` build against local
+  `v0.10.0-1-g1b17d01`, so upstream fixes are reflected immediately). The float
+  family (GAP-04) also reproduces on `v0.9.1` / `main` @ `72b6a6a`.
 - Go 1.26 (module declares `go 1.25.0`)
 - macOS arm64 (not OS-specific)

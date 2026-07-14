@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('NotoSans-Regular.ttf');
+  font-weight: normal;
+}
+body { margin: 0; }
+/* One construct: two lines of Noto Sans text with line-height:normal.
+   Regression case for FOLIO-GAP-01 across fonts other than Poppins —
+   folio must derive normal leading from this font's own vertical
+   metrics, not a flat multiplier. */
+.para {
+  font-family: 'Noto Sans';
+  font-size: 11px;
+  line-height: normal;
+  width: 220px;
+  background: #eef;
+}
+</style>
+</head>
+<body>
+<p class="para">Line one of Noto Sans text at line-height normal.<br>Line two should sit the same distance below line one as in a browser.</p>
+</body>
+</html>

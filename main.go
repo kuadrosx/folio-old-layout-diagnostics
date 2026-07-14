@@ -17,12 +17,17 @@ import (
 //	go run .
 const casesDir = "cases"
 
-func render(htmlStr, path string) error {
+func render(htmlStr, dir, path string) error {
 	doc := document.NewDocument(document.PageSizeA4)
 
 	opts := &foliohtml.Options{
 		PageWidth:  document.PageSizeA4.Width,
 		PageHeight: document.PageSizeA4.Height,
+		// Resolve local assets (e.g. @font-face url('Poppins-Regular.ttf'))
+		// relative to the case folder, so font-metric cases can ship their
+		// own TTFs case-locally. Chrome resolves the same relative url()
+		// against the sample.html location, keeping both engines in sync.
+		BaseFS: os.DirFS(dir),
 	}
 
 	if err := doc.AddHTMLWithContext(context.Background(), htmlStr, opts); err != nil {
@@ -58,7 +63,7 @@ func main() {
 		}
 
 		outPath := filepath.Join(dir, "output.pdf")
-		if err := render(string(htmlBytes), outPath); err != nil {
+		if err := render(string(htmlBytes), dir, outPath); err != nil {
 			fmt.Printf("%-18s ERROR: %v\n", entry.Name(), err)
 			continue
 		}

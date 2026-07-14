@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; }
+/* One construct: margins on flex children.
+   Chrome honors margin-left/right (a gutter between the two columns) and
+   margin-top (cross-axis offset of the second column). folio drops both,
+   so the columns butt together and the top offset is ignored. */
+.row { display: flex; width: 400px; background: #f4f4f4; }
+.col {
+  flex: 0 0 180px;
+  height: 80px;
+  background: #2e86de;  /* Column A: blue */
+  color: #fff;
+  font-family: Helvetica;
+}
+.col.b {
+  margin-left: 40px;   /* main-axis gutter */
+  margin-top: 30px;    /* cross-axis offset */
+  background: #e67e22;  /* Column B: orange (distinct from A) */
+}
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="col a">Column A</div>
+  <div class="col b">Column B (offset +40 left, +30 top)</div>
+</div>
+</body>
+</html>

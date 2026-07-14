@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+/* One construct: a display:grid pill that should shrink to its content
+   and round its corners. Chrome draws a compact rounded pill. folio
+   stretches the grid box to fill its container width and ignores
+   border-radius, drawing a wide square-cornered bar. */
+.wrap { width: 400px; background: #f4f4f4; padding: 20px; }
+.pill {
+  display: grid;
+  background: #4a90d9;
+  color: #fff;
+  border-radius: 16px;
+  padding: 6px 14px;
+}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="pill">Score 87</div></div>
+</body>
+</html>

@@ -12,13 +12,47 @@ The bugs live in `folio`, not here; this repo's job is to demonstrate them clear
 ## Commands
 
 ```sh
-go run .          # renders every cases/<name>/sample.html -> cases/<name>/output.pdf
-go build .        # compile only
+go run .                             # renders every cases/<name>/sample.html -> cases/<name>/output.pdf
+go build .                           # compile only
+go test -run TestChromeParity -v .   # folio-vs-Chrome parity harness (prints per-gap table)
+go test ./...                        # full suite
 ```
 
-There are no tests, linters, or CI configured in this repo. The committed
-`cases/<name>/output.pdf` files are intentionally checked in as rendered evidence
-of each bug — regenerate them with `go run .` after changing any `sample.html`.
+The committed `cases/<name>/output.pdf` files are intentionally checked in as
+rendered evidence of each bug — regenerate them with `go run .` after changing
+any `sample.html`.
+
+## folio dependency (local checkout)
+
+`go.work` pins the folio dependency to the **local checkout** at
+`../folio` (`use .` + `use ../folio`), so
+`go run`/`go test` build against local folio (`v0.10.0-1-g1b17d01`) and any
+upstream fix is reflected immediately — even though `go.mod` still requires
+`v0.9.1`. `main.go`'s renderer sets `Options.BaseFS = os.DirFS(dir)` so a case
+can ship case-local assets (e.g. the Poppins TTFs in `gap-01`/`gap-02`) and
+reference them via a relative `@font-face url(...)`.
+
+## Gap coverage and the parity harness
+
+Cases fall into two groups:
+- The **float family** (`minimal-float`, `float-*`, `css1-*`, `table-columns`,
+  `flex-columns`, `plain-blocks`, `acid1`, `acid2`) covers **FOLIO-GAP-04**.
+- One **`gap-NN-*`** case per remaining gap in
+  `folio-render-gaps.md`
+  (`FOLIO-GAP-01`…`03`, `05`…`11`). See the README's gap→case table.
+
+`parity_test.go` renders each `gap-NN-*` case with both folio and headless Chrome
+(same A4/0-margin page) and reports, per gap, whether folio **matches** Chrome:
+`FAIL` = differs (gap reproduces), `PASS` = matches (gap absent/fixed). Each case
+carries `wantReproduce` (the state at authoring time); the test is green while
+reality matches it and **alerts** (fails) when a verdict flips — so *a gap flips
+to PASS when folio is fixed upstream*, prompting removal of the downstream
+workaround. Comparisons are targeted geometric checks (flat-colour bounding
+boxes, corner square-vs-round, pill row-band counts, text-block extent) that are
+immune to font-antialiasing noise, plus structural PDF checks for GAP-03 (link
+action) and GAP-10 (page count). Chrome/poppler are gated: missing tools ⇒ the
+test skips, not fails. Float cases (GAP-04) are documented/inspected manually and
+not auto-graded.
 
 ## Structure
 

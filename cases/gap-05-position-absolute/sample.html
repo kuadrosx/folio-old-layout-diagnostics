@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+/* Report shape: a relative "banner" (the "banner" pill) whose only
+   child is an absolutely-positioned <p> (inline style, as in the report). The
+   banner's visible height comes from padding (not an in-flow child), so its
+   content box collapses to zero. Chrome paints the text inside the banner;
+   folio DROPS the absolutely-positioned text entirely, leaving a visibly empty
+   mint banner.
+
+   NOTE on the trigger: in this folio build the drop requires the relative
+   parent's *content* height to be zero (here via padding-top, matching the
+   report's content-sized banner). An explicit `height:58px` instead makes
+   folio render the overlay, so this case uses the collapsing box to reproduce
+   the report's dropped text. */
+</style>
+</head>
+<body>
+<div style="position:relative; padding-top:58px; background:#d4f1e4">
+  <p style="position:absolute; top:12px; width:80%; margin:0; color:#0b3d2e">Overlay banner - this banner text must appear.</p>
+</div>
+</body>
+</html>

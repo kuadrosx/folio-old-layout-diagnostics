@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+/* Report shape: several inline-block "badges" back-to-back (with whitespace/
+   newlines between them) inside a PLAIN block container ~48% of page width.
+   Chrome flows the badges horizontally and wraps to new lines as needed; folio
+   lays each inline-block out as a block -- one badge per line (stacked). */
+.container { width: 48%; }
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  white-space: nowrap;
+  margin-bottom: 0.2em;
+  background: #4800ff;
+  color: #fff;
+  border-radius: 0.25rem;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <span class="badge">driving_licenses</span>
+  <span class="badge">national_registry</span>
+  <span class="badge">criminal_record</span>
+  <span class="badge">tax_status</span>
+  <span class="badge">judicial</span>
+  <span class="badge">background</span>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+.wrap { width: 300px; padding: 20px; background: #f4f4f4; }
+/* Report shape: a flex "rectangle" pill with a fixed 34px height and rounded
+   corners, whose flex children are TALLER than 34px (a 26px number + a 16px
+   label at line-height 1.58). Chrome clips the background to the border-radius
+   (rounded bottom stays rounded). folio paints the overflow background as a
+   SQUARE band that spills below the rounded bottom corners. */
+.rectangle {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  background: #ffbc00;
+  color: #fff;
+}
+.rectangle .score { font-size: 26px; }
+.rectangle .label { font-size: 16px; line-height: 1.58; margin: 0 0 0 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rectangle">
+    <div class="score">8</div>
+    <p class="label">Puntaje del reporte</p>
+  </div>
+</div>
+</body>
+</html>

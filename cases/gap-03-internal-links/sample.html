@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+/* Block-level internal link -> folio's convertLink emits a link to a named
+   destination. folio commit 1b17d01 ("register element ids as PDF named
+   destinations") auto-registers the target id, so the link resolves to a real
+   /Dest on the target's page (a /Dests dict is present, no dangling /GoTo). */
+a { display: block; color: #06c; padding: 8px; }
+.spacer { height: 1400px; background: #f4f4f4; }
+#sec { background: #efe; padding: 8px; }
+</style>
+</head>
+<body>
+<a href="#sec">Ver desglose (jump to section)</a>
+<div class="spacer">Filler so the target lands on a later page.</div>
+<div id="sec"><h2>Target section</h2><p>The link above should navigate here.</p></div>
+</body>
+</html>

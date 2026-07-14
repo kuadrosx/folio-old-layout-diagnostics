@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@font-face {
+  font-family: 'Poppins';
+  src: url('Poppins-Bold.ttf');
+  font-weight: bold;
+}
+body { margin: 0; }
+/* One construct: a long unbreakable Poppins-Bold token in a fixed-width box.
+   folio's glyph advances run ~9% wider than the font's hmtx table (as the
+   browser shapes it), so the token overflows / wraps where Chrome fits it. */
+.box {
+  font-family: 'Poppins';
+  font-weight: bold;
+  font-size: 16px;
+  width: 320px;
+  white-space: nowrap;
+  background: #eef;
+}
+</style>
+</head>
+<body>
+<div class="box">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</div>
+</body>
+</html>
