@@ -24,5 +24,4 @@ go run .   # renders sample.html -> output.pdf
 
 ## Source
 
-Noto Sans — sourced independently via Homebrew (not from any internal
-project).
+Noto Sans — sourced independently via Homebrew.

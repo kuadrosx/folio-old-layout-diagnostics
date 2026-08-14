@@ -7,7 +7,7 @@ position; the relative banner renders empty.
 
 ## Summary
 
-A relative "banner" (the report's "banner" pill) whose visible height
+A relative "banner" pill whose visible height
 comes from padding — so its content box collapses to zero — contains a single
 absolutely-positioned `<p style="position:absolute; top:12px; width:80%">`.
 Chrome honors `position:absolute` and paints the text near the banner top, so
@@ -38,7 +38,7 @@ go run .   # renders sample.html -> output.pdf
 > Note on the trigger: in this build the misbehavior needs the relative
 > parent's *content* height to be zero (here via `padding-top`, matching the
 > report's content-sized banner). With an explicit `height:58px` folio instead
-> paints the overlay in place. The downstream gap doc recorded the report's
+> paints the overlay in place. The original bug report recorded the
 > symptom as the text being **dropped entirely** (empty box); here folio keeps
 > the text but puts it in the wrong place — either way the banner is empty and
 > the construct differs from the browser.

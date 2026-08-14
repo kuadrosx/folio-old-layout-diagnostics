@@ -24,8 +24,8 @@ any `sample.html`.
 
 ## folio dependency (local checkout)
 
-`go.work` pins the folio dependency to the **local checkout** at
-`../folio` (`use .` + `use ../folio`), so
+`go.work` (untracked) pins the folio dependency to a **local checkout** of
+folio kept as a sibling directory (`use .` + `use ../folio`), so
 `go run`/`go test` build against local folio (`v0.10.0-1-g1b17d01`) and any
 upstream fix is reflected immediately — even though `go.mod` still requires
 `v0.9.1`. `main.go`'s renderer sets `Options.BaseFS = os.DirFS(dir)` so a case
@@ -37,8 +37,8 @@ reference them via a relative `@font-face url(...)`.
 Cases fall into two groups:
 - The **float family** (`minimal-float`, `float-*`, `css1-*`, `table-columns`,
   `flex-columns`, `plain-blocks`, `acid1`, `acid2`) covers **FOLIO-GAP-04**.
-- One **`gap-NN-*`** case per remaining gap in
-  `folio-render-gaps.md`
+- One **`gap-NN-*`** case per remaining gap in the downstream
+  `folio-render-gaps.md` known-issues note
   (`FOLIO-GAP-01`…`03`, `05`…`11`). See the README's gap→case table.
 
 `parity_test.go` renders each `gap-NN-*` case with both folio and headless Chrome

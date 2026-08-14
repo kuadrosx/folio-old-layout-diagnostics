@@ -35,7 +35,7 @@ go run .   # renders sample.html -> output.pdf
 
 Before 1b17d01 folio emitted a dangling `/GoTo /D (sec)` string action (or a
 bare `/URI (#sec)`) with **zero** registered destinations, so the link jumped
-nowhere. This was the PDF-rendering report's "Ver desglose" dead-link symptom
+nowhere. This was the original report's dead-link symptom
 (FOLIO-GAP-03). commit 1b17d01 restores the `layout.Anchor` auto-registration
 documented under folio 0.8.0 (#223), which had been absent from the tree.
 

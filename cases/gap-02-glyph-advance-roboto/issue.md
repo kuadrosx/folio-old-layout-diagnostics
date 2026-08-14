@@ -24,5 +24,4 @@ go run .   # renders sample.html -> output.pdf
 
 ## Source
 
-Roboto — sourced independently via Homebrew (not from any internal
-project).
+Roboto — sourced independently via Homebrew.

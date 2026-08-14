@@ -15,8 +15,8 @@ package main
 // wantReproduce the Go test is GREEN. The moment a case's verdict flips —
 // a reproducing gap starts matching Chrome (folio fixed it), or a matching
 // construct starts differing (folio regressed) — the subtest FAILS with an
-// explicit alert. That is the signal to revisit the corresponding CSS
-// workaround in downstream.
+// explicit alert. That is the signal to revisit the corresponding
+// downstream CSS workaround.
 //
 // Why geometric checks instead of a whole-page pixel diff:
 // folio and Chrome rasterize fonts differently, so a per-pixel diff of any
@@ -657,8 +657,8 @@ func TestChromeParity(t *testing.T) {
 			switch {
 			case pc.wantReproduce && match:
 				t.Errorf("%s (%s): folio now MATCHES Chrome — the gap appears FIXED "+
-					"upstream. Verify, then remove the corresponding workaround in "+
-					"downstream and set wantReproduce=false here. (%s)", pc.gap, name, detail)
+					"upstream. Verify, then remove the corresponding downstream "+
+					"workaround and set wantReproduce=false here. (%s)", pc.gap, name, detail)
 			case !pc.wantReproduce && !match:
 				t.Errorf("%s (%s): folio now DIFFERS from Chrome — a construct that "+
 					"used to match has REGRESSED. Re-check the gap. (%s)", pc.gap, name, detail)

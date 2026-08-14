@@ -24,5 +24,4 @@ go run .   # renders sample.html -> output.pdf
 
 ## Source
 
-Inter — sourced independently via Homebrew (not from any internal
-project).
+Inter — sourced independently via Homebrew.

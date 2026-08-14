@@ -24,5 +24,4 @@ go run .   # renders sample.html -> output.pdf
 
 ## Source
 
-Open Sans — sourced independently via Homebrew (not from any internal
-project).
+Open Sans — sourced independently via Homebrew.

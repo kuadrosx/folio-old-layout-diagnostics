@@ -72,9 +72,8 @@ CSS1 box/float/clear benchmark rather than a minimal isolation.
 
 ## FOLIO-GAP coverage (PDF-rendering migration)
 
-Beyond the float family above, this repo carries one minimal case per gap in the
-downstream migration note
-`folio-render-gaps.md` (`FOLIO-GAP-01` …
+Beyond the float family above, this repo carries one minimal case per gap in a
+downstream migration note (`folio-render-gaps.md`, `FOLIO-GAP-01` …
 `FOLIO-GAP-11`). Each `gap-NN-*` case is a self-contained, upstream-ready triad
 (`sample.html` + `issue.md` + `output.pdf`). The **Current** column is the
 folio-vs-Chrome verdict measured by the parity harness against the pinned local

@@ -24,5 +24,4 @@ go run .   # renders sample.html -> output.pdf
 
 ## Source
 
-Nimbus Sans — sourced independently via Homebrew (not from any internal
-project).
+Nimbus Sans — sourced independently via Homebrew.
