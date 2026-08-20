@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+
+/* Passing control for the flex row-wrapper content loss (see
+   gap-14-flex-row-column-drop): byte-for-byte the same row wrapper and the same
+   tall column of tables, with `display: flex` removed from the wrapper. The
+   block wrapper fragments correctly — the column continues onto page 2 with
+   every Row NN intact — which is what makes the flex row the boundary of the
+   bug rather than the tables or the column. */
+
+.spacer { height: 1102px; }
+
+/* Same wrapper, minus display:flex. */
+.row-wrapper { }
+.gutter { width: 28px; }
+.marker { width: 12px; height: 6px; background: #333; }
+.column { }
+
+table { border-collapse: collapse; width: 100%; }
+td {
+  padding: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+}
+.last td { background: #f88; }
+</style>
+</head>
+<body>
+<div class="spacer"></div>
+
+<div class="row-wrapper">
+  <div class="gutter"><div class="marker"></div></div>
+  <div class="column">
+    <table>
+      <tr><td>Row01</td></tr>
+      <tr><td>Row02</td></tr>
+      <tr><td>Row03</td></tr>
+      <tr><td>Row04</td></tr>
+    </table>
+    <table>
+      <tr><td>Row05</td></tr>
+      <tr><td>Row06</td></tr>
+      <tr><td>Row07</td></tr>
+      <tr><td>Row08</td></tr>
+    </table>
+    <table>
+      <tr><td>Row09</td></tr>
+      <tr><td>Row10</td></tr>
+      <tr><td>Row11</td></tr>
+      <tr class="last"><td>Row12</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

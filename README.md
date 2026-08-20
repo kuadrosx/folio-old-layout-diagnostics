@@ -72,12 +72,12 @@ CSS1 box/float/clear benchmark rather than a minimal isolation.
 
 ## FOLIO-GAP coverage (PDF-rendering migration)
 
-Beyond the float family above, this repo carries one minimal case per gap in a
-downstream migration note (`folio-render-gaps.md`, `FOLIO-GAP-01` …
-`FOLIO-GAP-11`). Each `gap-NN-*` case is a self-contained, upstream-ready triad
-(`sample.html` + `issue.md` + `output.pdf`). The **Current** column is the
-folio-vs-Chrome verdict measured by the parity harness against the pinned local
-folio checkout (`v0.10.0-1-g1b17d01`):
+Beyond the float family above, this repo carries one minimal case per rendering
+gap found while porting a multi-page document generator onto folio
+(`FOLIO-GAP-01` … `FOLIO-GAP-14`). Each `gap-NN-*` case is a self-contained,
+upstream-ready triad (`sample.html` + `issue.md` + `output.pdf`). The
+**Current** column is the folio-vs-Chrome verdict measured by the parity harness
+against the pinned local folio checkout (`v0.10.0-1-g1b17d01`):
 
 | Gap | Case | Current (folio vs Chrome) |
 |-----|------|---------------------------|
@@ -92,14 +92,20 @@ folio checkout (`v0.10.0-1-g1b17d01`):
 | FOLIO-GAP-09 · `background-color` on `thead` | [`gap-09-thead-background`](./cases/gap-09-thead-background/issue.md) | ❌ FAIL — reproduces (no header bar painted) |
 | FOLIO-GAP-10 · flex line not fragmented (content loss) | [`gap-10-flex-page-break`](./cases/gap-10-flex-page-break/issue.md) | ❌ FAIL — reproduces (folio 1 page vs Chrome 2; content dropped) |
 | FOLIO-GAP-11 · background not clipped to radius on overflow | [`gap-11-border-radius-overflow`](./cases/gap-11-border-radius-overflow/issue.md) | ❌ FAIL — reproduces (square band spills below the rounded bottom) |
+| FOLIO-GAP-14 · flex row drops a column that cannot start on the page (content loss) | [`gap-14-flex-row-column-drop`](./cases/gap-14-flex-row-column-drop/issue.md) · control: [`gap-14-block-row-control`](./cases/gap-14-block-row-control/issue.md) | ✅ PASS — **fixed** in the local checkout (was: folio 1 page and 0 of 12 rows vs Chrome 2 pages and 12) |
 
-> **The one case that reads PASS: FOLIO-GAP-03.** The pinned folio checkout is
-> one commit past the `v0.10.0` tag, and that commit (`1b17d01`, "register
-> element ids as PDF named destinations") fixes internal `#id` links — the link
-> now resolves to a registered `/Dest`, matching Chrome. Its downstream
-> workaround can be removed once production moves onto a folio build with
-> 1b17d01. The parity harness will alert (flip GAP-03 back to FAIL) if the fix
-> ever regresses. Every other gap still reproduces (FAIL).
+> **The cases that read PASS.** *FOLIO-GAP-03:* the pinned folio checkout is one
+> commit past the `v0.10.0` tag, and that commit (`1b17d01`, "register element
+> ids as PDF named destinations") fixes internal `#id` links — the link now
+> resolves to a registered `/Dest`, matching Chrome. *FOLIO-GAP-14:* the flex
+> row-wrapper content loss is fixed in the local checkout, so its case and its
+> block-wrapper control both match Chrome; the case stays as a regression guard,
+> graded on the text that survives rather than on the page count (dropping a
+> column also drops the pages it would have needed, so a page-count check reads
+> the loss as an improvement). A PASS case's workaround can be removed once
+> production moves onto a folio build carrying the fix. The parity harness will
+> alert (flip a case back to FAIL) if either fix ever regresses. Every other gap
+> still reproduces (FAIL).
 
 ## Chrome parity harness
 

@@ -59,9 +59,10 @@ import (
 type checkKind int
 
 const (
-	kindGeom      checkKind = iota // decode both page-1 rasters, run geomFn
-	kindAnchor                     // GAP-03: folio must emit /GoTo, not /URI (#id)
-	kindPageBreak                  // GAP-10: folio page count must be >= Chrome's
+	kindGeom       checkKind = iota // decode both page-1 rasters, run geomFn
+	kindAnchor                      // GAP-03: folio must emit /GoTo, not /URI (#id)
+	kindPageBreak                   // GAP-10: folio page count must be >= Chrome's
+	kindTextTokens                  // GAP-14: every sentinel token Chrome renders must survive in folio
 )
 
 // geomResult is what a geometric check reports.
@@ -78,6 +79,10 @@ type parityCase struct {
 	wantReproduce bool
 	// geomFn measures folio vs chrome for kindGeom cases.
 	geomFn func(folio, chrome image.Image) geomResult
+	// tokens are the sentinel words a kindTextTokens case must render. The
+	// verdict is content, not page count: a dropped column takes its pages
+	// with it, so a page-count check reads content loss as an improvement.
+	tokens []string
 }
 
 // caseTable maps each gap case dir to its gap id and verdict strategy. The
@@ -85,31 +90,40 @@ type parityCase struct {
 // issue.md files and inspected manually; they are intentionally NOT graded
 // here (float geometry is covered by those cases, per the repo README).
 var caseTable = map[string]parityCase{
-	"gap-01-line-height":            {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-02-glyph-advance":          {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
-	"gap-03-internal-links":         {"FOLIO-GAP-03", kindAnchor, false, nil},
-	"gap-05-position-absolute":      {"FOLIO-GAP-05", kindGeom, true, checkAbsolute},
-	"gap-06-flex-margins":           {"FOLIO-GAP-06", kindGeom, true, checkFlexMargins},
-	"gap-07-grid-pill":              {"FOLIO-GAP-07", kindGeom, true, checkGridPill},
-	"gap-08-inline-block-flow":      {"FOLIO-GAP-08", kindGeom, true, checkInlineBlock},
-	"gap-09-thead-background":       {"FOLIO-GAP-09", kindGeom, true, checkTheadBg},
-	"gap-10-flex-page-break":        {"FOLIO-GAP-10", kindPageBreak, true, nil},
-	"gap-11-border-radius-overflow": {"FOLIO-GAP-11", kindGeom, true, checkRadiusOverflow},
+	"gap-01-line-height":            {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-02-glyph-advance":          {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
+	"gap-03-internal-links":         {"FOLIO-GAP-03", kindAnchor, false, nil, nil},
+	"gap-05-position-absolute":      {"FOLIO-GAP-05", kindGeom, true, checkAbsolute, nil},
+	"gap-06-flex-margins":           {"FOLIO-GAP-06", kindGeom, true, checkFlexMargins, nil},
+	"gap-07-grid-pill":              {"FOLIO-GAP-07", kindGeom, true, checkGridPill, nil},
+	"gap-08-inline-block-flow":      {"FOLIO-GAP-08", kindGeom, true, checkInlineBlock, nil},
+	"gap-09-thead-background":       {"FOLIO-GAP-09", kindGeom, true, checkTheadBg, nil},
+	"gap-10-flex-page-break":        {"FOLIO-GAP-10", kindPageBreak, true, nil, nil},
+	"gap-11-border-radius-overflow": {"FOLIO-GAP-11", kindGeom, true, checkRadiusOverflow, nil},
+
+	// A flex row used as a row wrapper (short gutter marker + tall column of
+	// tables) that straddles a page boundary used to drop the whole column:
+	// one complete-looking page, every row gone. The control renders the same
+	// wrapper and column as plain blocks. Both now match Chrome — the graded
+	// verdict is the surviving text, so a regression that drops the column
+	// again fails here even though it would make the document shorter.
+	"gap-14-flex-row-column-drop": {"FOLIO-GAP-14", kindTextTokens, false, nil, gap14Rows},
+	"gap-14-block-row-control":    {"FOLIO-GAP-14", kindTextTokens, false, nil, gap14Rows},
 
 	// Multi-font regression coverage for FOLIO-GAP-01/02: the same two
 	// constructs re-rendered with fonts other than Poppins, so a future
 	// change to line-height/glyph-advance handling that happens to work
 	// for one font's metrics but regresses another's is caught here.
-	"gap-01-line-height-nimbussans":   {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-01-line-height-inter":        {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-01-line-height-notosans":     {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-01-line-height-opensans":     {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-01-line-height-roboto":       {"FOLIO-GAP-01", kindGeom, false, checkLineHeight},
-	"gap-02-glyph-advance-nimbussans": {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
-	"gap-02-glyph-advance-inter":      {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
-	"gap-02-glyph-advance-notosans":   {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
-	"gap-02-glyph-advance-opensans":   {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
-	"gap-02-glyph-advance-roboto":     {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance},
+	"gap-01-line-height-nimbussans":   {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-01-line-height-inter":        {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-01-line-height-notosans":     {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-01-line-height-opensans":     {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-01-line-height-roboto":       {"FOLIO-GAP-01", kindGeom, false, checkLineHeight, nil},
+	"gap-02-glyph-advance-nimbussans": {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
+	"gap-02-glyph-advance-inter":      {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
+	"gap-02-glyph-advance-notosans":   {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
+	"gap-02-glyph-advance-opensans":   {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
+	"gap-02-glyph-advance-roboto":     {"FOLIO-GAP-02", kindGeom, false, checkGlyphAdvance, nil},
 }
 
 // ---------------------------------------------------------------------------
@@ -508,6 +522,34 @@ func rasterize(t *testing.T, pdftoppm, pdfPath string) (image.Image, bool) {
 	return img, true
 }
 
+// gap14Rows are the sentinel cells of the gap-14 samples' tall column. Each is
+// a single unbroken word so pdftotext reports it verbatim.
+var gap14Rows = []string{
+	"Row01", "Row02", "Row03", "Row04", "Row05", "Row06",
+	"Row07", "Row08", "Row09", "Row10", "Row11", "Row12",
+}
+
+// pdfText extracts a PDF's text with poppler's pdftotext. Empty string on
+// failure, which the caller reports as every token missing.
+func pdfText(pdftotext, pdfPath string) string {
+	out, err := exec.Command(pdftotext, pdfPath, "-").Output()
+	if err != nil {
+		return ""
+	}
+	return string(out)
+}
+
+// missingTokens lists the sentinel words absent from an extracted text.
+func missingTokens(text string, tokens []string) []string {
+	var missing []string
+	for _, tok := range tokens {
+		if !strings.Contains(text, tok) {
+			missing = append(missing, tok)
+		}
+	}
+	return missing
+}
+
 func pdfPageCount(pdfinfo, pdfPath string) int {
 	out, err := exec.Command(pdfinfo, pdfPath).Output()
 	if err != nil {
@@ -580,6 +622,7 @@ func TestChromeParity(t *testing.T) {
 		t.Skip("pdftoppm (poppler) not found; skipping parity harness")
 	}
 	pdfinfo, _ := exec.LookPath("pdfinfo")
+	pdftotext, _ := exec.LookPath("pdftotext")
 
 	type resultRow struct {
 		gap, dir, verdict, detail string
@@ -636,6 +679,24 @@ func TestChromeParity(t *testing.T) {
 				cpg := pdfPageCount(pdfinfo, chromePath)
 				match = fp >= cpg && cpg > 0
 				detail = fmt.Sprintf("folio pages=%d chrome pages=%d", fp, cpg)
+
+			case kindTextTokens:
+				if pdftotext == "" {
+					t.Skip("pdftotext (poppler) not found")
+				}
+				chromeMissing := missingTokens(pdfText(pdftotext, chromePath), pc.tokens)
+				if len(chromeMissing) > 0 {
+					// The reference itself did not render the sentinels, so
+					// there is nothing to compare against: the sample, not
+					// folio, is at fault.
+					t.Skipf("chrome did not render %d/%d sentinel tokens (%v) — sample needs fixing",
+						len(chromeMissing), len(pc.tokens), chromeMissing)
+				}
+				folioMissing := missingTokens(pdfText(pdftotext, folioPath), pc.tokens)
+				match = len(folioMissing) == 0
+				detail = fmt.Sprintf("folio missing %d/%d tokens %v (chrome renders all); folio pages=%d chrome pages=%d",
+					len(folioMissing), len(pc.tokens), folioMissing,
+					pdfPageCount(pdfinfo, folioPath), pdfPageCount(pdfinfo, chromePath))
 
 			default: // kindGeom
 				fimg, ok1 := rasterize(t, pdftoppm, folioPath)

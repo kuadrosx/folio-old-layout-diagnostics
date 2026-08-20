@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; font-family: Helvetica; }
+
+/* One construct (content loss): a flex row used as a ROW WRAPPER — a short
+   fixed-size marker in a gutter column plus a second column holding a stack of
+   tables — positioned so the row straddles a page boundary.
+
+   The spacer leaves a sliver of the first page: enough room for the 6px marker,
+   not enough for the first table row of the tall column. Chrome starts the row
+   on page 1 and continues the column onto page 2. folio lays the row out with
+   the marker alone and DROPS the whole column: the output is a well-formed,
+   complete-looking, one-page PDF with every Row NN gone.
+
+   Note the page count moves the wrong way — dropping the column means it never
+   asks for a page of its own, so the broken render is SHORTER than the correct
+   one. Count the rows, not the pages. */
+
+.spacer { height: 1102px; }
+
+.row-wrapper { display: flex; align-items: flex-start; }
+.gutter { width: 28px; }
+.marker { width: 12px; height: 6px; background: #333; }
+.column { flex: 1; }
+
+table { border-collapse: collapse; width: 100%; }
+td {
+  padding: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+}
+.last td { background: #f88; }
+</style>
+</head>
+<body>
+<div class="spacer"></div>
+
+<div class="row-wrapper">
+  <div class="gutter"><div class="marker"></div></div>
+  <div class="column">
+    <table>
+      <tr><td>Row01</td></tr>
+      <tr><td>Row02</td></tr>
+      <tr><td>Row03</td></tr>
+      <tr><td>Row04</td></tr>
+    </table>
+    <table>
+      <tr><td>Row05</td></tr>
+      <tr><td>Row06</td></tr>
+      <tr><td>Row07</td></tr>
+      <tr><td>Row08</td></tr>
+    </table>
+    <table>
+      <tr><td>Row09</td></tr>
+      <tr><td>Row10</td></tr>
+      <tr><td>Row11</td></tr>
+      <tr class="last"><td>Row12</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
