@@ -74,7 +74,7 @@ CSS1 box/float/clear benchmark rather than a minimal isolation.
 
 Beyond the float family above, this repo carries one minimal case per rendering
 gap found while porting a multi-page document generator onto folio
-(`FOLIO-GAP-01` … `FOLIO-GAP-14`). Each `gap-NN-*` case is a self-contained,
+(`FOLIO-GAP-01` … `FOLIO-GAP-15`). Each `gap-NN-*` case is a self-contained,
 upstream-ready triad (`sample.html` + `issue.md` + `output.pdf`). The
 **Current** column is the folio-vs-Chrome verdict measured by the parity harness
 against the pinned local folio checkout (`v0.10.0-1-g1b17d01`):
@@ -93,6 +93,7 @@ against the pinned local folio checkout (`v0.10.0-1-g1b17d01`):
 | FOLIO-GAP-10 · flex line not fragmented (content loss) | [`gap-10-flex-page-break`](./cases/gap-10-flex-page-break/issue.md) | ❌ FAIL — reproduces (folio 1 page vs Chrome 2; content dropped) |
 | FOLIO-GAP-11 · background not clipped to radius on overflow | [`gap-11-border-radius-overflow`](./cases/gap-11-border-radius-overflow/issue.md) | ❌ FAIL — reproduces (square band spills below the rounded bottom) |
 | FOLIO-GAP-14 · flex row drops a column that cannot start on the page (content loss) | [`gap-14-flex-row-column-drop`](./cases/gap-14-flex-row-column-drop/issue.md) · control: [`gap-14-block-row-control`](./cases/gap-14-block-row-control/issue.md) | ✅ PASS — **fixed** in the local checkout (was: folio 1 page and 0 of 12 rows vs Chrome 2 pages and 12) |
+| FOLIO-GAP-15 · internal `#id` link in inline flow emitted as `/URI (#id)` | [`gap-15-inline-internal-link`](./cases/gap-15-inline-internal-link/issue.md) · control: [`gap-15-block-internal-link-control`](./cases/gap-15-block-internal-link-control/issue.md) | ✅ PASS — **fixed** in the local checkout (was: 3 of 4 anchors emitted `/URI (#target-section)`, the fourth emitted no annotation at all) |
 
 > **The cases that read PASS.** *FOLIO-GAP-03:* the pinned folio checkout is one
 > commit past the `v0.10.0` tag, and that commit (`1b17d01`, "register element
@@ -102,7 +103,11 @@ against the pinned local folio checkout (`v0.10.0-1-g1b17d01`):
 > block-wrapper control both match Chrome; the case stays as a regression guard,
 > graded on the text that survives rather than on the page count (dropping a
 > column also drops the pages it would have needed, so a page-count check reads
-> the loss as an improvement). A PASS case's workaround can be removed once
+> the loss as an improvement). *FOLIO-GAP-15:* an internal anchor in inline
+> flow (the CSS default for `<a>`) used to be written out as a `/URI` action
+> carrying the bare fragment, which resolves to nothing in a viewer; it now
+> emits a resolvable destination, and its `display:block` control — the path
+> that always worked — pins the boundary. A PASS case's workaround can be removed once
 > production moves onto a folio build carrying the fix. The parity harness will
 > alert (flip a case back to FAIL) if either fix ever regresses. Every other gap
 > still reproduces (FAIL).

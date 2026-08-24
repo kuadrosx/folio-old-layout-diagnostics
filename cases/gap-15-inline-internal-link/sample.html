@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* An internal anchor (<a href="#id">) that flows INLINE — i.e. anywhere
+   inside a paragraph, heading, list item or table cell. This is the CSS
+   default for <a>, so it is the ordinary case, not an exotic one.
+
+   folio emits each of these as a PDF /URI action carrying the literal
+   string "#target-section". A URI action pointing at a bare fragment
+   resolves to nothing in any viewer, so every link here is dead.
+
+   The control case (gap-15-block-internal-link-control) forces the same
+   anchor to display:block, which routes it down a different converter
+   path and produces a working destination. */
+body { margin: 0; font-family: Helvetica; font-size: 12px; }
+a { color: #06c; }
+.spacer { height: 1400px; background: #f4f4f4; }
+#target-section { background: #eef; padding: 8px; }
+table { border-collapse: collapse; }
+td { border: 1px solid #ccc; padding: 6px; }
+</style>
+</head>
+<body>
+
+<h2>Contents with <a href="#target-section">an anchor in a heading</a></h2>
+
+<p>A paragraph containing <a href="#target-section">an anchor in running
+text</a>, which is where most internal links in a document appear.</p>
+
+<ul>
+  <li>A list item containing <a href="#target-section">an anchor in a list</a>.</li>
+</ul>
+
+<table>
+  <tr><td>A table cell containing <a href="#target-section">an anchor in a cell</a>.</td></tr>
+</table>
+
+<div class="spacer">Filler so the target lands on a later page.</div>
+
+<div id="target-section">
+  <h2>Target section</h2>
+  <p>Every link above should navigate here.</p>
+</div>
+
+</body>
+</html>

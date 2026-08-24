@@ -110,6 +110,17 @@ var caseTable = map[string]parityCase{
 	"gap-14-flex-row-column-drop": {"FOLIO-GAP-14", kindTextTokens, false, nil, gap14Rows},
 	"gap-14-block-row-control":    {"FOLIO-GAP-14", kindTextTokens, false, nil, gap14Rows},
 
+	// An internal anchor that flows inline — the CSS default for <a>, and
+	// so the ordinary case — used to be written out as a /URI action
+	// carrying the bare fragment "#target-section", which resolves to
+	// nothing in any viewer. The control forces the same anchor to
+	// display:block, which took a different converter path and always
+	// worked. Both now emit a resolvable destination; the graded verdict
+	// is the link action itself, so a regression that reverts either one
+	// to a fragment /URI fails here.
+	"gap-15-inline-internal-link":        {"FOLIO-GAP-15", kindAnchor, false, nil, nil},
+	"gap-15-block-internal-link-control": {"FOLIO-GAP-15", kindAnchor, false, nil, nil},
+
 	// Multi-font regression coverage for FOLIO-GAP-01/02: the same two
 	// constructs re-rendered with fonts other than Poppins, so a future
 	// change to line-height/glyph-advance handling that happens to work

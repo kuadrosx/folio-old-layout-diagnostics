@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* CONTROL for gap-15-inline-internal-link.
+
+   The same <a href="#target-section">, differing in one declaration:
+   display:block. That makes it a block-level element, so the converter
+   dispatches it as its own element instead of folding it into the
+   surrounding text — and that path has always emitted a real destination.
+
+   Rendering both cases side by side shows the boundary: the defect is
+   not "internal links are broken", it is "internal links are broken
+   whenever they flow inline", which is the CSS default. */
+body { margin: 0; font-family: Helvetica; font-size: 12px; }
+a { display: block; color: #06c; }
+.spacer { height: 1400px; background: #f4f4f4; }
+#target-section { background: #eef; padding: 8px; }
+</style>
+</head>
+<body>
+
+<a href="#target-section">A block-level anchor</a>
+
+<div class="spacer">Filler so the target lands on a later page.</div>
+
+<div id="target-section">
+  <h2>Target section</h2>
+  <p>The link above should navigate here.</p>
+</div>
+
+</body>
+</html>
